@@ -21,7 +21,8 @@ jobs:
   setup:
     name: setup-${{ matrix.name }}
     runs-on: ubuntu-22.04
-
+    container:
+      image: fedora:40
     strategy:
       fail-fast: false
       matrix:
@@ -97,6 +98,8 @@ jobs:
   lint:
     needs: setup
     runs-on: ubuntu-22.04
+    container:
+      image: fedora:40    
     steps:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
@@ -223,7 +226,8 @@ jobs:
     name: test-python-${{ matrix.name }}
     needs: setup
     runs-on: ubuntu-22.04
-
+    container:
+      image: fedora:40
     strategy:
       fail-fast: false
       matrix:
@@ -298,6 +302,8 @@ jobs:
   test-js:
     needs: setup
     runs-on: ubuntu-22.04
+    container:
+      image: fedora:40
     steps:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
