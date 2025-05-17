@@ -38,10 +38,10 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('package*.json') }}
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env[matrix.python_version_var] }}
+#      - name: Setup Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env[matrix.python_version_var] }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -50,7 +50,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install system dependencies
-        run: sudo apt-get install libpq-dev
+        run: yum -y  install postgresql-devel
 
       - name: Install uv
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
@@ -247,10 +247,10 @@ jobs:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env[matrix.python_version_var] }}
+ #     - name: Setup Python
+ #       uses: actions/setup-python@v5
+ #       with:
+ #         python-version: ${{ env[matrix.python_version_var] }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -308,10 +308,10 @@ jobs:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION_312 }}
+#      - name: Setup Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env.PYTHON_VERSION_312 }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
