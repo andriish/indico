@@ -53,11 +53,12 @@ jobs:
         run: yum -y  install postgresql-devel
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
+#        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install python3-uv-*
+  
       - name: Create virtualenv
         run: |
-          uv venv --python ${{ matrix.python }} --seed .venv
+          uv venv --python ${{ matrix.python }} --seed .venv --system-site-packages
           source .venv/bin/activate
 
       - name: Activate virtualenv for later steps
@@ -104,10 +105,10 @@ jobs:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION_312 }}
+#      - name: Setup Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env.PYTHON_VERSION_312 }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -115,8 +116,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
+ #       run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install python3-uv-*
+  
       - name: Download environment
         uses: actions/download-artifact@v4
         with:
@@ -258,7 +260,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+#        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install python3-uv-*
 
       - name: Download environment
         uses: actions/download-artifact@v4
@@ -319,7 +322,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+#        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install python3-uv-*
 
       - name: Download environment
         uses: actions/download-artifact@v4
