@@ -50,7 +50,7 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install system dependencies
-        run: yum -y  install postgresql-devel postgresql-* python3-devel
+        run: yum -y  install postgresql-devel postgresql-* python3-devel 
 
       - name: Install uv
 #        run: curl -LsSf https://astral.sh/uv/install.sh | sh
