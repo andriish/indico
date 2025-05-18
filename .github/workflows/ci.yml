@@ -282,12 +282,14 @@ jobs:
       # END common steps
 
       - name: Install redis
-        run: sudo apt-get install redis-server
+#        run: sudo apt-get install redis-server
+        run: yum -y install redis-server
 
       - name: Setup database
         run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client libpq-dev
+          #sudo apt-get update
+          #sudo apt-get install postgresql-client libpq-dev
+          yum -y install postgresql-*
           export PGHOST=localhost
           export PGPORT=${{ job.services.postgres.ports[5432] }}
           export PGUSER=postgres
