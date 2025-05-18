@@ -117,7 +117,7 @@ jobs:
 
       - name: Install uv
  #       run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        run: yum -y install python3-uv-*
+        run: yum -y install git python3-uv-*
   
       - name: Download environment
         uses: actions/download-artifact@v4
@@ -261,7 +261,7 @@ jobs:
 
       - name: Install uv
 #        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        run: yum -y install python3-uv-*
+        run: yum -y install git python3-uv-*
 
       - name: Download environment
         uses: actions/download-artifact@v4
@@ -283,7 +283,7 @@ jobs:
 
       - name: Install redis
 #        run: sudo apt-get install redis-server
-        run: yum -y install redis-server
+        run: yum -y install redis-*
 
       - name: Setup database
         run: |
@@ -325,7 +325,7 @@ jobs:
 
       - name: Install uv
 #        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        run: yum -y install python3-uv-*
+        run: yum -y install git python3-uv-*
 
       - name: Download environment
         uses: actions/download-artifact@v4
