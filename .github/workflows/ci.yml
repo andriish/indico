@@ -21,7 +21,8 @@ jobs:
   setup:
     name: setup-${{ matrix.name }}
     runs-on: ubuntu-22.04
-
+    container:
+      image: fedora:40
     strategy:
       fail-fast: false
       matrix:
@@ -37,10 +38,10 @@ jobs:
           path: node_modules
           key: ${{ runner.os }}-npm-${{ hashFiles('package*.json') }}
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env[matrix.python_version_var] }}
+#      - name: Setup Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env[matrix.python_version_var] }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -49,14 +50,15 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install system dependencies
-        run: sudo apt-get install libpq-dev
+        run: yum -y  install postgresql-devel postgresql-* python3-devel 
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
+#        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install python3-uv-*
+  
       - name: Create virtualenv
         run: |
-          uv venv --python ${{ matrix.python }} --seed .venv
+          uv venv --python ${{ matrix.python }} --seed .venv --system-site-packages
           source .venv/bin/activate
 
       - name: Activate virtualenv for later steps
@@ -97,14 +99,16 @@ jobs:
   lint:
     needs: setup
     runs-on: ubuntu-22.04
+    container:
+      image: fedora:40    
     steps:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION_312 }}
+#      - name: Setup Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env.PYTHON_VERSION_312 }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -112,8 +116,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
-
+ #       run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install git pango-* python3-uv-*
+  
       - name: Download environment
         uses: actions/download-artifact@v4
         with:
@@ -223,7 +228,8 @@ jobs:
     name: test-python-${{ matrix.name }}
     needs: setup
     runs-on: ubuntu-22.04
-
+    container:
+      image: fedora:40
     strategy:
       fail-fast: false
       matrix:
@@ -243,10 +249,10 @@ jobs:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env[matrix.python_version_var] }}
+ #     - name: Setup Python
+ #       uses: actions/setup-python@v5
+ #       with:
+ #         python-version: ${{ env[matrix.python_version_var] }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -254,7 +260,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+#        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install git python3-uv-*
 
       - name: Download environment
         uses: actions/download-artifact@v4
@@ -275,12 +282,14 @@ jobs:
       # END common steps
 
       - name: Install redis
-        run: sudo apt-get install redis-server
+#        run: sudo apt-get install redis-server
+        run: yum -y install redis-*
 
       - name: Setup database
         run: |
-          sudo apt-get update
-          sudo apt-get install postgresql-client libpq-dev
+          #sudo apt-get update
+          #sudo apt-get install postgresql-client libpq-dev
+          yum -y install postgresql-*
           export PGHOST=localhost
           export PGPORT=${{ job.services.postgres.ports[5432] }}
           export PGUSER=postgres
@@ -298,14 +307,16 @@ jobs:
   test-js:
     needs: setup
     runs-on: ubuntu-22.04
+    container:
+      image: fedora:40
     steps:
       # BEGIN common steps - edit all occurrences if needed!
       - uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: ${{ env.PYTHON_VERSION_312 }}
+#      - name: Setup Python
+#        uses: actions/setup-python@v5
+#        with:
+#          python-version: ${{ env.PYTHON_VERSION_312 }}
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -313,7 +324,8 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
 
       - name: Install uv
-        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+#        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+        run: yum -y install git python3-uv-*
 
       - name: Download environment
         uses: actions/download-artifact@v4
