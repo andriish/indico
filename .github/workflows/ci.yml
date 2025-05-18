@@ -117,7 +117,7 @@ jobs:
 
       - name: Install uv
  #       run: curl -LsSf https://astral.sh/uv/install.sh | sh
-        run: yum -y install git python3-uv-*
+        run: yum -y install git pango-* python3-uv-*
   
       - name: Download environment
         uses: actions/download-artifact@v4
