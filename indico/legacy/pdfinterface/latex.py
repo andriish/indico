@@ -13,8 +13,6 @@ import tempfile
 import time
 import typing as t
 from dataclasses import dataclass
-from importlib.resources import as_file
-from importlib.resources import files as res_files
 from io import BytesIO
 from operator import attrgetter
 from pathlib import Path
@@ -37,7 +35,7 @@ from indico.core.config import config
 from indico.core.limiter import make_rate_limiter
 from indico.core.logger import Logger
 from indico.core.marshmallow import mm
-from indico.legacy.pdfinterface.base import escape
+from indico.legacy.pdfinterface.base import escape, find_font_files
 from indico.modules.events.abstracts.models.abstracts import AbstractReviewingState, AbstractState
 from indico.modules.events.abstracts.models.reviews import AbstractAction
 from indico.modules.events.abstracts.settings import BOACorrespondingAuthorType, boa_settings
@@ -265,7 +263,10 @@ class LatexRunner:
             self._run_latex_local(source_file, log_file)
 
     def _run_latex_podman(self, source_file, log_file, podman_config: PodmanConfig):
-        font_dir = os.readlink(os.path.join(self.source_dir, 'fonts'))
+        # the fonts dir contains symlinks; their directories need to be available in the container
+        font_dirs = sorted({os.path.dirname(os.path.realpath(os.path.join(self.source_dir, 'fonts', f)))
+                            for f in os.listdir(os.path.join(self.source_dir, 'fonts'))})
+        font_mounts = [arg for d in font_dirs for arg in ('-v', f'{d}:{d}:ro')]
         font_cache = os.path.join(config.CACHE_DIR, 'fontconfig')
         if not os.path.exists(font_cache):
             os.mkdir(font_cache)
@@ -279,7 +280,7 @@ class LatexRunner:
             '--network', 'none',
             '-v', f'{font_cache}:/var/cache/fontconfig',
             '-v', f'{self.source_dir}:/workdir',
-            '-v', f'{font_dir}:{font_dir}:ro',
+            *font_mounts,
             '-v', f'{texmf_cnf_local}:{texmf_container_path}:ro',
             *podman_config.run_args,
             podman_config.image,
@@ -355,8 +356,12 @@ class LatexRunner:
         with codecs.open(source_filename, 'wb', encoding='utf-8') as f:
             f.write(source)
 
-        with as_file(res_files('indico_fonts')) as font_dir:
-            os.symlink(font_dir, os.path.join(self.source_dir, 'fonts'))
+        # Build a fonts directory containing symlinks to all available font files
+        # (from indico_fonts and/or $INDICO_FONT_PATH)
+        font_target = os.path.join(self.source_dir, 'fonts')
+        os.mkdir(font_target)
+        for filename, path in find_font_files().items():
+            os.symlink(path, os.path.join(font_target, filename))
         return source_filename, target_filename
 
     def run(self, template_name, **kwargs):
